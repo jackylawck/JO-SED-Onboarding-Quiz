@@ -46,54 +46,18 @@ if "pdf_downloaded" not in st.session_state:
     st.session_state.pdf_downloaded = False
 
 # ---------------------------------------------------------
-# 3. 讀取測驗題庫 (預設 5 條安環試題)
+# 3. 從 Secrets 動態載入測驗題庫
 # ---------------------------------------------------------
-DEFAULT_QUESTIONS = [
-    {
-        "id": 1,
-        "type": "single",
-        "question": "1. 在什麼情況下需要配戴安全帽連帽帶？",
-        "options": ["A. 進入地盤後任何時間", "B. 根據個人喜好", "C. 在室外地方才需要"],
-        "answer": "A. 進入地盤後任何時間"
-    },
-    {
-        "id": 2,
-        "type": "single",
-        "question": "2. 在何種情況下需要使用護眼罩？",
-        "options": ["A. 任何情況都必須使用眼罩", "B. 任何情況都不須使用眼罩", "C. 當工序會產生火花或碎片時就需要使用"],
-        "answer": "C. 當工序會產生火花或碎片時就需要使用"
-    },
-    {
-        "id": 3,
-        "type": "single",
-        "question": "3. 在任何高空工作或任何離地工作及樓邊和升降槽內工作而沒有安全工作台是否需要使用全身式安全帶連雙尾扣？",
-        "options": ["A. 是", "B. 否", "C. 按個人需要"],
-        "answer": "A. 是"
-    },
-    {
-        "id": 4,
-        "type": "single",
-        "question": "4. 如在地盤發生意外,你須怎樣處理？",
-        "options": ["A. 立即報警求助", "B. 立即向所屬上司或當區安全人員報告", "C. 自行求醫"],
-        "answer": ["B. 立即向所屬上司或當區安全人員報告"]
-    },
-    {
-        "id": 5,
-        "type": "single",
-        "question": "5. 如在地盤發現不安全情況,你須怎樣處理？",
-        "options": ["A. 不須理會,做妥自己工作便可", "B. 不須理會,其他人發現時會處理", "C. 立即向所屬上司或當區管工報告"],
-        "answer": "C. 立即向所屬上司或當區管工報告"
-    }
-]
-
 @st.cache_data
 def get_questions():
-    if "QUESTIONS_JSON" in st.secrets:
-        try:
-            return json.loads(st.secrets["QUESTIONS_JSON"])
-        except Exception:
-            return DEFAULT_QUESTIONS
-    return DEFAULT_QUESTIONS
+    if "QUESTIONS_JSON" not in st.secrets:
+        st.error("⚠️ 系統 Secrets 尚未設定 QUESTIONS_JSON 題庫，請聯絡系統管理員。")
+        st.stop()
+    try:
+        return json.loads(st.secrets["QUESTIONS_JSON"])
+    except Exception as e:
+        st.error(f"⚠️ 題庫 JSON 格式解析失敗，請檢查 Secrets 設定：{e}")
+        st.stop()
 
 questions = get_questions()
 
@@ -110,7 +74,7 @@ def clean_text(val):
     return cleaned if cleaned else "無"
 
 # ---------------------------------------------------------
-# 4. PDF 生成函數 (純考核版)
+# 4. PDF 生成函數
 # ---------------------------------------------------------
 def generate_pdf(basic_info, quiz_result, user_answers, submit_time_str):
     pdf = FPDF(orientation='P', unit='mm', format='A4')
@@ -169,7 +133,7 @@ def mark_as_downloaded():
     st.session_state.pdf_downloaded = True
 
 # =========================================================
-# 第一階段：回答 5 條選擇題
+# 第一階段：回答選擇題
 # =========================================================
 if st.session_state.step == 1:
     st.title("📝 東淦入職安全訓練評估系統")
