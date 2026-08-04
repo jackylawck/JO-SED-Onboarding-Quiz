@@ -7,9 +7,9 @@ An Automated Enterprise Onboarding Safety Assessment Web System for Jumbo Orient
 
 ## 🌐 項目簡介 / System Overview
 
-**jo-sed-onboarding-quiz** 是一個基於 Streamlit 開發的企業級入職安全訓練互動 Web 系統。系統專為安環組（SED）設計，整合了門禁驗證、5 題地盤安全知識考核及即時合規 PDF 報告生成功能，協助安環組高效完成新員工入職安全訓練驗收與檔案歸檔。
+**jo-sed-onboarding-quiz** 是一個基於 Streamlit 開發的企業級入職安全訓練互動 Web 系統。系統專為安環組（SED）設計，整合了門禁驗證、動態載入地盤安全知識考核題庫及即時合規 PDF 報告生成功能，協助安環組高效完成新員工入職安全訓練驗收與檔案歸檔。
 
-**jo-sed-onboarding-quiz** is an enterprise onboarding safety assessment web application developed for Jumbo Orient employees using Streamlit. Built to streamline Safety & Environmental Department (SED) workflows, it combines access security, real-time safety knowledge evaluation, and automated, compliant PDF report generation for internal safety management.
+**jo-sed-onboarding-quiz** is an enterprise onboarding safety assessment web application developed for Jumbo Orient employees using Streamlit. Built to streamline Safety & Environmental Department (SED) workflows, it combines access security, dynamic quiz data loading, real-time safety knowledge evaluation, and automated, compliant PDF report generation for internal safety management.
 
 ---
 
@@ -31,9 +31,9 @@ An Automated Enterprise Onboarding Safety Assessment Web System for Jumbo Orient
   * 內建安全解鎖機制，確保員工先下載 PDF 報告後方可開啟提交按鈕；支援一鍵開啟 Outlook (`mailto:`) 並預填郵件範本，方便員工隨信附上 PDF 附件發送至安環組。
   * Features a conditional download lock to ensure users save their PDF before launching pre-formatted Outlook email links.
 
-* **企業級安全與防護 (Enterprise Security & Secrets Management)**
-  * 前端整合通行碼門禁驗證，系統通行碼與安環組電郵統一透過 Streamlit Secrets 安全管理，防止敏感資訊外洩。
-  * Integrated access control with environment-level Secrets handling to protect corporate access codes and internal contacts.
+* **企業級資安與動態題庫管理 (Enterprise Security & Dynamic Secrets Management)**
+  * 前端整合通行碼門禁驗證，系統通行碼、安環組電郵及 JSON 題庫/答案統一透過 Streamlit Secrets 安全管理，原始碼不洩漏敏感資訊，且支援免重新部署即時更新題庫。
+  * Features environment-level Secrets management for access codes, internal contacts, and JSON quiz data, preventing source code exposure and enabling hot-swappable quiz updates without redeployment.
 
 ---
 
