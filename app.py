@@ -7,7 +7,7 @@ import streamlit as st
 from fpdf import FPDF
 
 # 頁面設定
-st.set_page_config(page_title="東淦新員工入職培訓考核系統", page_icon="📝")
+st.set_page_config(page_title="東淦入職安全訓練評估系統", page_icon="📝")
 
 # ---------------------------------------------------------
 # 1. 前端門禁驗證 (從 Secrets 讀取 ACCESS_CODE)
@@ -16,7 +16,7 @@ if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-    st.title("🔒 東淦新員工入職培訓考核系統")
+    st.title("🔒 東淦入職安全訓練評估系統")
     st.markdown("🏢 [東淦工程有限公司 (Jumbo Orient) 官方網站](https://www.jumboorient.com.hk/)", unsafe_allow_html=True)
     st.write("")
     
@@ -75,7 +75,7 @@ DEFAULT_QUESTIONS = [
         "type": "single",
         "question": "4. 如在地盤發生意外,你須怎樣處理？",
         "options": ["A. 立即報警求助", "B. 立即向所屬上司或當區安全人員報告", "C. 自行求醫"],
-        "answer": ["B. 立即向所屬上司或當區安全人員報告"]  # 支援陣列或字串對比
+        "answer": ["B. 立即向所屬上司或當區安全人員報告"]
     },
     {
         "id": 5,
@@ -159,7 +159,7 @@ def generate_pdf(basic_info, quiz_result, user_answers, submit_time_str):
 
     pdf.ln(10)
     pdf.set_font_size(8)
-    lines = textwrap.wrap("聲明：本文件為內部培訓紀錄，由員工本人確認獨立完成填答。個人資料僅供內部人力資源與安全管理用途。", width=45)
+    lines = textwrap.wrap("聲明：本文件為內部培訓紀錄，由員工本人確認獨立完成填答。個人資料僅供內部安全管理用途。", width=45)
     for line in lines:
         pdf.cell(0, 5, txt=line, ln=1)
 
@@ -172,7 +172,7 @@ def mark_as_downloaded():
 # 第一階段：回答 5 條選擇題
 # =========================================================
 if st.session_state.step == 1:
-    st.title("📝 東淦新員工入職培訓考核系統")
+    st.title("📝 東淦入職安全訓練評估系統")
     st.markdown("🏢 [東淦工程有限公司 (Jumbo Orient) 官方網站](https://www.jumboorient.com.hk/)", unsafe_allow_html=True)
     st.write("")
     
@@ -210,7 +210,6 @@ if st.session_state.step == 1:
                 user_ans = user_answers[q["id"]]
                 correct_ans = q.get("answer", "")
                 
-                # 相容列表或字串形式的比對
                 if isinstance(correct_ans, list):
                     if user_ans in correct_ans or [user_ans] == correct_ans:
                         score += 1
@@ -254,7 +253,7 @@ elif st.session_state.step == 2:
         st.balloons()
         st.success(f"🎯 測驗得分：{q_res['score']} / {q_res['total']}（{status_str}）— 恭喜通過入職培訓考核！")
     else:
-        st.error(f"⚠️ 測驗得分：{q_res['score']} / {q_res['total']}（{status_str}）— 未達 3 分合格標準，請重新複習安環手冊。")
+        st.error(f"⚠️ 測驗得分：{q_res['score']} / {q_res['total']}（{status_str}）— 未達 3 分合格標準，請重新進行測驗。")
         
     pdf_bytes = generate_pdf(b_info, q_res, u_ans, sub_time)
     
@@ -274,12 +273,12 @@ elif st.session_state.step == 2:
     if not st.session_state.pdf_downloaded:
         st.warning("🔒 步驟 2 解鎖條件：請先點擊上方「步驟 1」按鈕下載 PDF 報告檔！")
     else:
-        st.success("✅ 已順利下載 PDF 報告！請選擇下方提交方式發送給負責人：")
-        st.subheader("步驟 2：選擇提交方式發送至負責人電郵")
+        st.success("✅ 已順利下載 PDF 報告！請選擇下方提交方式發送給安環組：")
+        st.subheader("步驟 2：選擇提交方式發送至安環組電郵")
         
-        email_to = st.secrets.get("HR_EMAIL", "未設定負責人電郵")
+        email_to = st.secrets.get("HR_EMAIL", "未設定安環組電郵")
         email_subject = f"【入職培訓結果】{b_info['dept']} - {b_info['name']} ({b_info['emp_id']})"
-        email_body = f"""Dear SED / HR,
+        email_body = f"""Dear SED,
 
 我是 {b_info['dept']} 的 {b_info['name']} ({b_info['emp_id']})。
 我已於 {sub_time} 完成新員工入職培訓考核（得分：{q_res['score']}/{q_res['total']}，{status_str}）。
