@@ -53,6 +53,10 @@ An Automated Enterprise Onboarding Safety Assessment Web System for Jumbo Orient
 
 * **管控編號 (Document ID)**: `JO-SED-REC-2026-V1`
 * **管理部門 (Department)**: 安全及環保組 / Safety & Environmental Department (SED)
+* **收件對象 (SED Email)**: `XXXXXXX@jumboorient.com.hk`
 * **合格標準 (Pass Criteria)**: 最少答對 3 / 5 條 (≥ 60%)
 * **個人資料聲明 (Data Privacy Statement)**: 本文件為內部培訓紀錄，由員工本人確認獨立完成填答。個人資料僅供內部安全管理用途。
-* **合規標準 (Compliance)**: Integrated Management System (ISO 45001 / ISO 14001 / ISO 9001) Controlled Records
+* **合規體系認證 (ISO Compliance)**: 
+  * **ISO 45001 (職業健康安全)**: Clause 7.2 Competence 培訓與能力驗證文件化紀錄。
+  * **ISO 9001 (品質管理)**: Integrated Management System (IMS) Controlled Records 文件管控。
+  * **ISO 27001 (資訊安全)**: A.9 Access Control 門禁控制與機密金鑰環境變數抽離。
