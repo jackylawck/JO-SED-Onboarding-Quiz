@@ -145,7 +145,7 @@ if st.session_state.step == 1:
         with col1:
             name = st.text_input("姓名 *")
         with col2:
-            emp_id = st.text_input("職員編號 *")
+            emp_id = st.text_input("工人註冊證編號 *")
         with col3:
             dept = st.selectbox("組別 *", DEPT_OPTIONS)
             
@@ -163,7 +163,7 @@ if st.session_state.step == 1:
 
     if submit_step1:
         if not name or not emp_id or dept == "請選擇組別":
-            st.warning("請先完整填寫姓名、職員編號並選擇組別！")
+            st.warning("請先完整填寫姓名、工人註冊證編號並選擇組別！")
         elif not declaration:
             st.warning("請先勾選個人確認聲明方可提交！")
         else:
