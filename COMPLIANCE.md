@@ -54,18 +54,3 @@ Pursuant to the definitions in the EU AI Act (Regulation (EU) 2024/1689) and ISO
 * It does NOT utilize generative neural architectures, dynamic probabilistic inference, continuous adaptive machine learning, or automated human-profiling algorithms.
 * Consequently, requirements for High-Risk AI Conformity Assessments, Post-Market Monitoring, and AI Foundation Model Registries under EU AI Act and ISO/IEC 42001 are explicitly documented as **Non-Applicable (不適用)**.
 
----
-
-## 5. Export Control & Trade Compliance Statement / 出口管制聲明
-
-* **Export Control Classification Number (ECCN)**: EAR99
-* **Defense/Military Utility**: None (Civil commercial occupational training tool).
-* **Cryptographic Controls**: Uses standard open-source transport layer security (TLS 1.2/1.3) provided by foundational network protocols. No controlled dual-use or restricted military technologies under ITAR/Wassenaar Arrangement are embedded.
-
----
-
-## 6. Document Control & Sign-off / 受控資訊與簽核
-
-* **Author / 編製**: Safety & Environmental Department (SED)
-* **Approved by / 審核**: Legal & Governance / Compliance Directorate
-* **Archive Reference / 歸檔識別碼**: `JO-SED-GOV-2026-V1`
