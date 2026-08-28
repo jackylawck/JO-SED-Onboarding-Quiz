@@ -1,56 +1,51 @@
-# 🛡️ Compliance, Governance & Regulatory Assessment
-# 合規、治理架構與法規適用性評估報告
+# 📋 綜合合規與治理架構說明書 / Comprehensive Compliance & Governance Framework
 
-**Document Control ID / 受控文件編號**: `JO-SED-GOV-2026-V1`  
-**System Name / 系統名稱**: 東淦入職安全訓練評估系統 (jo-sed-onboarding-quiz)  
-**Governing Unit / 管控部門**: 安全及環保組 (SED)  
-**Effective Date / 生效日期**: 2026-08-28  
+**專案名稱 / Project Name**: 東淦入職安全訓練評估系統 (jo-sed-onboarding-quiz)  
+**受控編號 / Control Document ID**: `JO-SED-GOV-2026-V1`  
+**所屬體系 / Management System**: Jumbo Orient Integrated Management System (IMS)
 
 ---
 
-## 1. Executive Summary / 執行摘要
+## 1. 全球與本地法規合規適用性評估 / Regulatory Applicability Matrix
 
-This document defines the regulatory compliance, privacy architecture, and risk governance posture of the **jo-sed-onboarding-quiz** system deployed by Jumbo Orient Development Limited. The system operates under a **Zero Server Retention (ZSR)** and **Privacy-by-Design (PbD)** paradigm to deliver internal occupational safety evaluations.
+本系統經法規與風險評估，各主要國際標準與法規適用性界定如下：
 
-本文件闡明東淦工程有限公司「入職安全訓練評估系統」之法規遵循、私隱架構與風險治理方針。系統採用「零伺服器資料留存 (ZSR)」與「由設計保障私隱 (PbD)」機制，專為內部職業安全健康培訓考核而設計。
 
----
+```
 
-## 2. Regulatory Applicability Matrix / 法規與治理標準適用性矩陣
++-----------------------------------------------------------------------------------+
+| 法規 / 標準規範 (Standard / Law)       | 適用狀態 (Status) | 治理與合規對應措施 (Compliance Measures)             |
++-----------------------------------------------------------------------------------+
+| 香港個人資料(私隱)條例 (Cap. 486 PDPO)  | ✅ 完全適用        | 符合保障資料原則 (DPP 1-4)，資料最小化與告知聲明。  |
+| ISO 45001:2018 (職安健管理體系)        | ✅ 完全適用        | 符合 Clause 7.2 人員安全能力驗證與培訓紀錄歸檔。     |
+| ISO 9001:2015 (品質管理體系)           | ✅ 完全適用        | 符合 Clause 7.5 受控文件識別碼 (JO-SED-REC-2026-V1)。|
+| ISO/IEC 27001:2022 (資訊安全管理)      | ✅ 完全適用        | A.9 存取控制、Secrets 機密隔離、輸入消毒防護。        |
+| 歐盟 GDPR (EU 2016/679) 參照           | 🌐 原則對標        | 落實 Privacy by Design 與 Zero Data Retention。    |
+| 歐盟人工智能法案 (EU AI Act)            | ❌ 不適用 (N/A)   | 本系統屬確定性規則邏輯，無任何 AI/ML 模型或演算法。   |
+| ISO/IEC 42001:2023 (人工智能管理體系)  | ❌ 不適用 (N/A)   | 無 AI 生命週期或自主決策系統，免除 AIMS 治理要求。   |
++-----------------------------------------------------------------------------------+
 
-| Regulatory Framework / 標準規範 | Jurisdiction / 管轄範圍 | Applicability / 適用性 | Justification & Governance Measure / 治理與處置依據 |
-| :--- | :--- | :--- | :--- |
-| **Hong Kong PDPO (Cap. 486)** | Hong Kong | **Full (全面適用)** | Strict adherence to DPP1-DPP6; explicit consent declaration; data minimization (Worker ID, Name, Dept only). |
-| **EU GDPR** | European Union / Global | **Proportional (按比例遵循)** | Art. 25 (Data protection by design/default); Art. 5(1)(c) (Data minimisation); No persistent storage on host servers. |
-| **EU Artificial Intelligence Act** | European Union | **Non-Applicable (不適用)** | System is deterministic, hardcoded rule-based scoring. No autonomous ML/AI logic, GPAI, or High-Risk AI deployment. |
-| **ISO/IEC 42001:2023 (AIMS)** | International | **Exempt / Aligned (免除/對齊)** | Non-AI Determination filed. Adheres to organizational AI transparency and automated decision safeguards. |
-| **ISO/IEC 27001:2022 (ISMS)** | International | **Full (全面適用)** | Clause A.9 (Access Control), A.10 (Cryptography/Secrets), A.8.20 (Network Security) via Streamlit Secrets and HTTPS. |
-| **ISO 45001:2018 (OHSMS)** | International | **Full (全面適用)** | Clause 7.2 (Competence & Training records verification); generates immutable audit trails for on-site personnel. |
-| **ISO 9001:2015 (QMS)** | International | **Full (全面適用)** | Clause 7.5 (Documented Information); standardized record format (`JO-SED-REC-2026-V1`). |
-| **US EAR / ITAR / Dual-Use** | United States / Global | **Non-Applicable (不適用)** | EAR99 compliant. Uses standard open-source Python libraries (Streamlit, FPDF) with no proprietary military cryptography. |
-
----
-
-## 3. Data Protection & Privacy-by-Design (PbD)
-## 數據保護與由設計保障私隱架構
-
-* **Principle of Data Minimisation (資料最小化原則)**:
-  * The system collects only: Worker Registration ID (工人註冊證), Name, Department, and Assessment Timestamp.
-  * No biometric data, sensitive financial records, or high-risk identifiers are processed or held.
-* **Zero Server Retention (ZSR) (零伺服器資料留存)**:
-  * Application memory is transient within the Python session state.
-  * PDF records are generated dynamically in-memory (`bytes`) and immediately transferred via TLS encrypted SMTP to designated authorized SED inboxes.
-  * No underlying SQL/NoSQL databases are maintained on cloud infrastructure.
-* **Integrity and Access Control (存取控制與機密隔離)**:
-  * Application access requires runtime authorization (`ACCESS_CODE`).
-  * Questions, answers, and SMTP transmission credentials are fundamentally decoupled from public source code repositories via Environment-level Secrets (`st.secrets`).
+```
 
 ---
 
-## 4. Non-AI Determination Statement / 非人工智能系統判定聲明
+## 2. 治理與架構技術合規要點 / Technical Governance Points
 
-Pursuant to the definitions in the EU AI Act (Regulation (EU) 2024/1689) and ISO/IEC 22989:
-* The **jo-sed-onboarding-quiz** is classified as a **Deterministic Automated Logic Evaluation Engine**.
-* It does NOT utilize generative neural architectures, dynamic probabilistic inference, continuous adaptive machine learning, or automated human-profiling algorithms.
-* Consequently, requirements for High-Risk AI Conformity Assessments, Post-Market Monitoring, and AI Foundation Model Registries under EU AI Act and ISO/IEC 42001 are explicitly documented as **Non-Applicable (不適用)**.
+### 2.1 零資料留存原則 (Zero-Data-Retention)
+本系統作為輕量級前端 Web 介面，不架設任何外置儲存庫（No SQL / No NoSQL / No Cloud Storage Bucket）。所有資料流轉僅於記憶體中執行單次 PDF 渲染並即時發送，保障員工私隱不受雲端託管端洩漏威脅。
 
+### 2.2 審計追蹤與不可否認性 (Auditability & Non-Repudiation)
+* 每份 PDF 報告自動標註香港標準時間戳（UTC+8 HKT）。
+* 每份報告完整列印受試者之每題實際提交答案與得分判定。
+* 包含受試者個人誠信獨立填答聲明，滿足 IMS 內部審計與勞工處/公營機構之地盤安全稽核標準。
+
+### 2.3 變更與維護管控 (Change Management)
+題庫與合格標準統一由安環組主管（SED Manager）於後台環境設定檔（`QUESTIONS_JSON`）維護，程式原始碼倉庫（Source Code Repository）嚴禁硬編碼任何業務機密，符合安全開發生命週期（SDLC）規範。
+
+---
+
+## 3. 合規審計簽核 / Compliance Sign-off
+
+* **體系主責部門 / Lead Department**: 安全及環保組 (SED)
+* **稽核參照標準 / Audit References**: ISO 9001 / ISO 14001 / ISO 45001 / ISO 27001
+* **受控存檔期限 / Retention Period**: 依公司安全管理政策及建造業法定培訓紀錄保存年限執行。
