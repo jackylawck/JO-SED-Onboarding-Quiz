@@ -1,9 +1,10 @@
 import os
 import json
 import re
-import html
-import textwrap
-import urllib.parse
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
 from datetime import datetime, timezone, timedelta
 import streamlit as st
 from fpdf import FPDF
@@ -51,8 +52,6 @@ if "step" not in st.session_state:
     st.session_state.step = 1
 if "quiz_data" not in st.session_state:
     st.session_state.quiz_data = {}
-if "pdf_downloaded" not in st.session_state:
-    st.session_state.pdf_downloaded = False
 
 # ---------------------------------------------------------
 # 3. 從 Secrets 動態載入測驗題庫
@@ -139,11 +138,59 @@ def generate_pdf(basic_info, quiz_result, user_answers, submit_time_str):
 
     return bytes(pdf.output())
 
-def mark_as_downloaded():
-    st.session_state.pdf_downloaded = True
+# ---------------------------------------------------------
+# 5. SMTP 後端自動發信函數
+# ---------------------------------------------------------
+def send_email_with_pdf(basic_info, quiz_result, pdf_bytes, submit_time_str):
+    if "SMTP_USER" not in st.secrets or "SMTP_PASSWORD" not in st.secrets:
+        return False, "未設定 SMTP 寄件帳號或密碼，無法自動發信。"
+    
+    smtp_server = st.secrets.get("SMTP_SERVER", "smtp.office365.com")
+    smtp_port = int(st.secrets.get("SMTP_PORT", 587))
+    sender_email = st.secrets["SMTP_USER"]
+    sender_password = st.secrets["SMTP_PASSWORD"]
+    receiver_email = st.secrets.get("HR_EMAIL", "krystallin@jumboorient.com.hk")
+    
+    status_str = "合格 (PASS)" if quiz_result["is_pass"] else "不合格 (FAIL)"
+    
+    msg = MIMEMultipart()
+    msg["From"] = sender_email
+    msg["To"] = receiver_email
+    msg["Subject"] = f"【入職培訓結果】{basic_info['dept']} - {basic_info['name']} ({basic_info['emp_id']})"
+    
+    body = f"""Dear SED,
+
+新員工入職安全訓練考核紀錄如下：
+• 姓名：{basic_info['name']}
+• 工人註冊證編號：{basic_info['emp_id']}
+• 所屬組別：{basic_info['dept']}
+• 考核時間：{submit_time_str}
+• 考核得分：{quiz_result['score']} / {quiz_result['total']} ({status_str})
+
+詳細考核報告 PDF 檔已隨信附上，請查閱存檔。
+
+(本郵件由東淦入職安全訓練評估系統自動發送)"""
+
+    msg.attach(MIMEText(body, "plain", "utf-8"))
+    
+    # 附加 PDF
+    pdf_attachment = MIMEApplication(pdf_bytes, _subtype="pdf")
+    safe_filename = re.sub(r'[\\/*?:"<>|]', "", basic_info['name'])
+    pdf_attachment.add_header('Content-Disposition', 'attachment', filename=('utf-8', '', f"入職培訓紀錄_{safe_filename}.pdf"))
+    msg.attach(pdf_attachment)
+    
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port, timeout=15)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.send_message(msg)
+        server.quit()
+        return True, "考核報告 PDF 已成功自動寄送至安環組郵箱！"
+    except Exception as e:
+        return False, f"自動發信失敗：{str(e)}"
 
 # =========================================================
-# 第一階段：回答選擇題
+# 第一階段：回答選擇題並提交
 # =========================================================
 if st.session_state.step == 1:
     st.title("📝 東淦入職安全訓練評估系統")
@@ -169,7 +216,7 @@ if st.session_state.step == 1:
         st.divider()
         declaration = st.checkbox("本人確認上述資料正確，並由本人獨立完成測驗。 *")
 
-        submit_step1 = st.form_submit_button("提交測驗並檢視成績 ➔")
+        submit_step1 = st.form_submit_button("提交測驗並自動發送報告 ➔")
 
     if submit_step1:
         name = sanitize_input(name_raw, 20)
@@ -200,23 +247,35 @@ if st.session_state.step == 1:
             now_hk = datetime.now(hk_tz)
             submit_time_str = now_hk.strftime("%Y-%m-%d %H:%M:%S")
 
+            basic_info = {"name": name, "emp_id": emp_id, "dept": dept}
+            quiz_result = {"score": score, "total": total_items, "is_pass": is_pass}
+            
+            # 生成 PDF
+            pdf_bytes = generate_pdf(basic_info, quiz_result, user_answers, submit_time_str)
+            
+            # 背景自動發信
+            with st.spinner("正在自動發送報告至安環組，請稍候..."):
+                mail_ok, mail_msg = send_email_with_pdf(basic_info, quiz_result, pdf_bytes, submit_time_str)
+
             st.session_state.quiz_data = {
-                "basic_info": {"name": name, "emp_id": emp_id, "dept": dept},
-                "quiz_result": {"score": score, "total": total_items, "is_pass": is_pass},
+                "basic_info": basic_info,
+                "quiz_result": quiz_result,
                 "user_answers": user_answers,
-                "submit_time": submit_time_str
+                "submit_time": submit_time_str,
+                "pdf_bytes": pdf_bytes,
+                "mail_status": (mail_ok, mail_msg)
             }
             st.session_state.step = 2
             st.rerun()
 
 # =========================================================
-# 第二階段：顯示成績、下載 PDF 及寄送郵件
+# 第二階段：顯示成績與自動發送狀態 (一鍵直出)
 # =========================================================
 elif st.session_state.step == 2:
     b_info = st.session_state.quiz_data["basic_info"]
     q_res = st.session_state.quiz_data["quiz_result"]
-    u_ans = st.session_state.quiz_data["user_answers"]
-    sub_time = st.session_state.quiz_data.get("submit_time", "")
+    pdf_bytes = st.session_state.quiz_data.get("pdf_bytes")
+    mail_ok, mail_msg = st.session_state.quiz_data.get("mail_status", (False, "未執行發信"))
     
     status_str = "合格 (PASS)" if q_res["is_pass"] else "不合格 (FAIL)"
     
@@ -232,58 +291,27 @@ elif st.session_state.step == 2:
     else:
         st.error(f"⚠️ 測驗得分：{q_res['score']} / {q_res['total']}（{status_str}）— 未達 3 分合格標準，請重新進行測驗。")
         
-    pdf_bytes = generate_pdf(b_info, q_res, u_ans, sub_time)
-    
     st.divider()
-    st.subheader("📥 步驟 1：下載 PDF 報告檔 (必須先下載)")
     
-    # 清理檔名中的非合法字元
+    st.subheader("📧 報告發送狀態")
+    if mail_ok:
+        st.success(f"✅ {mail_msg}")
+        st.caption(f"考核紀錄 PDF 已直接送達安環組郵箱 ({st.secrets.get('HR_EMAIL', 'krystallin@jumboorient.com.hk')})，您無需進行其他操作。")
+    else:
+        st.warning(f"⚠️ {mail_msg}")
+        st.info("請點擊下方按鈕自行下載 PDF 報告，並手動補寄給安環組。")
+    
+    # 備用下載按鈕 (供員工個人保存備份)
     safe_filename = re.sub(r'[\\/*?:"<>|]', "", b_info['name'])
     st.download_button(
-        label=f"點此下載「入職培訓紀錄_{safe_filename}.pdf」",
+        label=f"📥 下載個人考核紀錄備份 (PDF)",
         data=pdf_bytes,
         file_name=f"入職培訓紀錄_{safe_filename}.pdf",
-        mime="application/pdf",
-        on_click=mark_as_downloaded
+        mime="application/pdf"
     )
-    
-    st.divider()
-    
-    if not st.session_state.pdf_downloaded:
-        st.warning("🔒 步驟 2 解鎖條件：請先點擊上方「步驟 1」按鈕下載 PDF 報告檔！")
-    else:
-        st.success("✅ 已順利下載 PDF 報告！請選擇下方提交方式發送給安環組：")
-        st.subheader("步驟 2：選擇提交方式發送至安環組電郵")
-        
-        email_to = st.secrets.get("HR_EMAIL", "krystallin@jumboorient.com.hk")
-        email_subject = f"【入職培訓結果】{b_info['dept']} - {b_info['name']} ({b_info['emp_id']})"
-        email_body = f"""Dear SED,
-
-我是 {b_info['dept']} 的 {b_info['name']} ({b_info['emp_id']})。
-我已於 {sub_time} 完成新員工入職培訓考核（得分：{q_res['score']}/{q_res['total']}，{status_str}）。
-
-（已下載並附上「入職培訓紀錄_{b_info['name']}.pdf」報告檔案）"""
-
-        mailto_url = f"mailto:{urllib.parse.quote(email_to)}?subject={urllib.parse.quote(email_subject)}&body={urllib.parse.quote(email_body)}"
-        
-        # 安全 HTML 轉義
-        safe_mailto_url = html.escape(mailto_url)
-        safe_email_to = html.escape(email_to)
-
-        st.markdown(
-            f'<a href="{safe_mailto_url}" target="_blank" style="text-decoration:none;">'
-            f'<button style="background-color:#0078D4; color:white; padding:12px 20px; border:none; border-radius:6px; font-size:16px; font-weight:bold; cursor:pointer; width:100%; margin-bottom:8px;">'
-            f'📧 點此自動開啟 Outlook 寄至 {safe_email_to}'
-            f'</button></a>',
-            unsafe_allow_html=True
-        )
-        
-        st.caption(f"💡 若點擊按鈕未彈出 Outlook，請複製電郵地址 ({email_to}) 手動寄信並附加 PDF。")
-        st.code(email_to, language=None)
 
     st.write("")
     if st.button("🔄 重新進行測驗"):
         st.session_state.step = 1
         st.session_state.quiz_data = {}
-        st.session_state.pdf_downloaded = False
         st.rerun()
