@@ -127,7 +127,7 @@ def generate_pdf(basic_info, quiz_result, user_answers, submit_time_str):
     pdf.set_font_size(11)
     status_str = "合格 (PASS)" if quiz_result['is_pass'] else "不合格 (FAIL)"
     pdf.cell(0, 7, txt=f"姓名：{basic_info['name']}", ln=1)
-    pdf.cell(0, 7, txt=f"職員編號：{basic_info['emp_id']}", ln=1)
+    pdf.cell(0, 7, txt=f"工人註冊證：{basic_info['emp_id']}", ln=1)
     pdf.cell(0, 7, txt=f"組別：{basic_info['dept']}", ln=1)
     pdf.cell(0, 7, txt=f"考核時間：{submit_time_str}", ln=1)
     pdf.cell(0, 7, txt=f"測驗得分：{quiz_result['score']} / {quiz_result['total']} - {status_str}", ln=1)
