@@ -1,5 +1,7 @@
 import os
 import json
+import re
+import html
 import textwrap
 import urllib.parse
 from datetime import datetime, timezone, timedelta
@@ -7,30 +9,39 @@ import streamlit as st
 from fpdf import FPDF
 
 # 頁面設定
-st.set_page_config(page_title="東淦入職安全訓練評估系統", page_icon="📝")
+st.set_page_config(page_title="東淦入職安全訓練評估系統", page_icon="📝", layout="centered")
 
 # ---------------------------------------------------------
-# 1. 前端門禁驗證 (從 Secrets 讀取 ACCESS_CODE)
+# 1. 前端門禁驗證 (加入錯誤嘗試計數與防暴力重試)
 # ---------------------------------------------------------
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
+if "login_attempts" not in st.session_state:
+    st.session_state.login_attempts = 0
 
 if not st.session_state.authenticated:
     st.title("🔒 東淦入職安全訓練評估系統")
-    st.markdown("🏢 [東淦工程有限公司 (Jumbo Orient) 官方網站](https://www.jumboorient.com.hk/)", unsafe_allow_html=True)
+    st.markdown("🏢 [東淦工程有限公司 (Jumbo Orient) 官方網站](https://www.jumboorient.com.hk/)")
     st.write("")
     
     if "ACCESS_CODE" not in st.secrets:
-        st.error("⚠️ 系統尚未設定 ACCESS_CODE，請管理員於 Streamlit Secrets 設定後再試。")
+        st.error("⚠️ 系統安全組態未就緒 (ACCESS_CODE Missing)，請聯絡安環組管理員。")
         st.stop()
 
-    user_code = st.text_input("請輸入員工通行碼以開始測驗：", type="password")
+    if st.session_state.login_attempts >= 5:
+        st.error("🚫 登入失敗次數過多，為維護系統安全，請重新整理頁面或稍後再試。")
+        st.stop()
+
+    user_code = st.text_input("請輸入員工通行碼以開始測驗：", type="password", max_chars=20)
     if st.button("確認"):
         if user_code == st.secrets["ACCESS_CODE"]:
             st.session_state.authenticated = True
+            st.session_state.login_attempts = 0
             st.rerun()
         else:
-            st.error("通行碼錯誤！請重新輸入或聯絡 HR / 安環組。")
+            st.session_state.login_attempts += 1
+            remaining = 5 - st.session_state.login_attempts
+            st.error(f"通行碼錯誤！剩餘嘗試次數：{remaining}")
     st.stop()
 
 # ---------------------------------------------------------
@@ -38,10 +49,8 @@ if not st.session_state.authenticated:
 # ---------------------------------------------------------
 if "step" not in st.session_state:
     st.session_state.step = 1
-
 if "quiz_data" not in st.session_state:
     st.session_state.quiz_data = {}
-
 if "pdf_downloaded" not in st.session_state:
     st.session_state.pdf_downloaded = False
 
@@ -51,12 +60,12 @@ if "pdf_downloaded" not in st.session_state:
 @st.cache_data
 def get_questions():
     if "QUESTIONS_JSON" not in st.secrets:
-        st.error("⚠️ 系統 Secrets 尚未設定 QUESTIONS_JSON 題庫，請聯絡系統管理員。")
+        st.error("⚠️ 題庫組態未載入，請聯絡系統管理員。")
         st.stop()
     try:
         return json.loads(st.secrets["QUESTIONS_JSON"])
     except Exception as e:
-        st.error(f"⚠️ 題庫 JSON 格式解析失敗，請檢查 Secrets 設定：{e}")
+        st.error("⚠️ 題庫 JSON 格式解析失敗，請檢查系統後台配置。")
         st.stop()
 
 questions = get_questions()
@@ -67,14 +76,15 @@ DEPT_OPTIONS = [
     "安全及環保組 (SED)", "營運審計組", "會計組", "物控組", "倉管組", "其他"
 ]
 
-def clean_text(val):
+def sanitize_input(val: str, max_len: int = 50) -> str:
+    """清理輸入字串，去除換行與惡意注入字元"""
     if not val:
         return "無"
-    cleaned = str(val).replace("\r\n", " ").replace("\n", " ").replace("\r", " ").strip()
-    return cleaned if cleaned else "無"
+    cleaned = re.sub(r"[\r\n\t]", " ", str(val)).strip()
+    return cleaned[:max_len] if cleaned else "無"
 
 # ---------------------------------------------------------
-# 4. PDF 生成函數
+# 4. 合規 PDF 生成函數
 # ---------------------------------------------------------
 def generate_pdf(basic_info, quiz_result, user_answers, submit_time_str):
     pdf = FPDF(orientation='P', unit='mm', format='A4')
@@ -89,7 +99,7 @@ def generate_pdf(basic_info, quiz_result, user_answers, submit_time_str):
     else:
         pdf.set_font("Helvetica", size=11)
 
-    # Header
+    # Header - IMS 管控資訊
     pdf.set_font_size(9)
     pdf.cell(0, 5, txt="Jumbo Orient Development Limited - IMS Controlled Record", ln=1, align="R")
     pdf.cell(0, 5, txt="Document ID: JO-SED-REC-2026-V1 | Confidential", ln=1, align="R")
@@ -100,7 +110,7 @@ def generate_pdf(basic_info, quiz_result, user_answers, submit_time_str):
     pdf.cell(0, 10, txt="入職訓練評估報告", ln=1, align="C")
     pdf.ln(5)
     
-    # 個人基本資料 & 得分
+    # 員工基本資料 & 得分
     pdf.set_font_size(11)
     status_str = "合格 (PASS)" if quiz_result['is_pass'] else "不合格 (FAIL)"
     pdf.cell(0, 7, txt=f"姓名：{basic_info['name']}", ln=1)
@@ -137,15 +147,15 @@ def mark_as_downloaded():
 # =========================================================
 if st.session_state.step == 1:
     st.title("📝 東淦入職安全訓練評估系統")
-    st.markdown("🏢 [東淦工程有限公司 (Jumbo Orient) 官方網站](https://www.jumboorient.com.hk/)", unsafe_allow_html=True)
+    st.markdown("🏢 [東淦工程有限公司 (Jumbo Orient) 官方網站](https://www.jumboorient.com.hk/)")
     st.write("")
     
     with st.form("step1_form"):
         col1, col2, col3 = st.columns(3)
         with col1:
-            name = st.text_input("姓名 *")
+            name_raw = st.text_input("姓名 *", max_chars=20)
         with col2:
-            emp_id = st.text_input("工人註冊證編號 *")
+            emp_id_raw = st.text_input("工人註冊證編號 *", max_chars=20)
         with col3:
             dept = st.selectbox("組別 *", DEPT_OPTIONS)
             
@@ -162,7 +172,10 @@ if st.session_state.step == 1:
         submit_step1 = st.form_submit_button("提交測驗並檢視成績 ➔")
 
     if submit_step1:
-        if not name or not emp_id or dept == "請選擇組別":
+        name = sanitize_input(name_raw, 20)
+        emp_id = sanitize_input(emp_id_raw, 20)
+
+        if not name_raw.strip() or not emp_id_raw.strip() or dept == "請選擇組別":
             st.warning("請先完整填寫姓名、工人註冊證編號並選擇組別！")
         elif not declaration:
             st.warning("請先勾選個人確認聲明方可提交！")
@@ -208,7 +221,7 @@ elif st.session_state.step == 2:
     status_str = "合格 (PASS)" if q_res["is_pass"] else "不合格 (FAIL)"
     
     st.title("🎉 考核完成！")
-    st.markdown("🏢 [東淦工程有限公司 (Jumbo Orient) 官方網站](https://www.jumboorient.com.hk/)", unsafe_allow_html=True)
+    st.markdown("🏢 [東淦工程有限公司 (Jumbo Orient) 官方網站](https://www.jumboorient.com.hk/)")
     st.write("")
     
     st.info(f"👤 員工：{b_info['name']} ({b_info['emp_id']}) | 組別：{b_info['dept']}")
@@ -224,10 +237,12 @@ elif st.session_state.step == 2:
     st.divider()
     st.subheader("📥 步驟 1：下載 PDF 報告檔 (必須先下載)")
     
+    # 清理檔名中的非合法字元
+    safe_filename = re.sub(r'[\\/*?:"<>|]', "", b_info['name'])
     st.download_button(
-        label=f"點此下載「入職培訓紀錄_{b_info['name']}.pdf」",
+        label=f"點此下載「入職培訓紀錄_{safe_filename}.pdf」",
         data=pdf_bytes,
-        file_name=f"入職培訓紀錄_{b_info['name']}.pdf",
+        file_name=f"入職培訓紀錄_{safe_filename}.pdf",
         mime="application/pdf",
         on_click=mark_as_downloaded
     )
@@ -240,7 +255,7 @@ elif st.session_state.step == 2:
         st.success("✅ 已順利下載 PDF 報告！請選擇下方提交方式發送給安環組：")
         st.subheader("步驟 2：選擇提交方式發送至安環組電郵")
         
-        email_to = st.secrets.get("HR_EMAIL", "未設定安環組電郵")
+        email_to = st.secrets.get("HR_EMAIL", "krystallin@jumboorient.com.hk")
         email_subject = f"【入職培訓結果】{b_info['dept']} - {b_info['name']} ({b_info['emp_id']})"
         email_body = f"""Dear SED,
 
@@ -249,12 +264,16 @@ elif st.session_state.step == 2:
 
 （已下載並附上「入職培訓紀錄_{b_info['name']}.pdf」報告檔案）"""
 
-        mailto_url = f"mailto:{email_to}?subject={urllib.parse.quote(email_subject)}&body={urllib.parse.quote(email_body)}"
+        mailto_url = f"mailto:{urllib.parse.quote(email_to)}?subject={urllib.parse.quote(email_subject)}&body={urllib.parse.quote(email_body)}"
         
+        # 安全 HTML 轉義
+        safe_mailto_url = html.escape(mailto_url)
+        safe_email_to = html.escape(email_to)
+
         st.markdown(
-            f'<a href="{mailto_url}" target="_blank" style="text-decoration:none;">'
+            f'<a href="{safe_mailto_url}" target="_blank" style="text-decoration:none;">'
             f'<button style="background-color:#0078D4; color:white; padding:12px 20px; border:none; border-radius:6px; font-size:16px; font-weight:bold; cursor:pointer; width:100%; margin-bottom:8px;">'
-            f'📧 點此自動開啟 Outlook 寄至 {email_to}'
+            f'📧 點此自動開啟 Outlook 寄至 {safe_email_to}'
             f'</button></a>',
             unsafe_allow_html=True
         )
