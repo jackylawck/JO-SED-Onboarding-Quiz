@@ -127,7 +127,7 @@ def generate_pdf(basic_info, quiz_result, user_answers, submit_time_str):
     pdf.set_font_size(11)
     status_str = "合格 (PASS)" if quiz_result['is_pass'] else "不合格 (FAIL)"
     pdf.cell(0, 7, txt=f"姓名：{basic_info['name']}", ln=1)
-    pdf.cell(0, 7, txt=f"工人註冊證：{basic_info['emp_id']}", ln=1)
+    pdf.cell(0, 7, txt=f"工人註冊證：{basic_info['worker_id']}", ln=1)
     pdf.cell(0, 7, txt=f"組別：{basic_info['dept']}", ln=1)
     pdf.cell(0, 7, txt=f"考核時間：{submit_time_str}", ln=1)
     pdf.cell(0, 7, txt=f"測驗得分：{quiz_result['score']} / {quiz_result['total']} - {status_str}", ln=1)
@@ -153,7 +153,7 @@ def generate_pdf(basic_info, quiz_result, user_answers, submit_time_str):
 # ---------------------------------------------------------
 # 5. 後端自動寄送電郵函數 (Python SMTP)
 # ---------------------------------------------------------
-def send_email_direct(b_info, q_res, status_str, pdf_bytes, submit_time_str):
+def send_email_direct(basic_info, quiz_result, status_str, pdf_bytes, submit_time_str):
     smtp_server = st.secrets.get("SMTP_SERVER", "smtp.office365.com")
     smtp_port = int(st.secrets.get("SMTP_PORT", 587))
     sender_email = st.secrets.get("SMTP_USER", "")
@@ -166,15 +166,15 @@ def send_email_direct(b_info, q_res, status_str, pdf_bytes, submit_time_str):
     msg = MIMEMultipart()
     msg['From'] = sender_email
     msg['To'] = receiver_email
-    msg['Subject'] = f"【入職培訓結果】{b_info['dept']} - {b_info['name']} ({b_info['emp_id']})"
+    msg['Subject'] = f"【入職培訓結果】{basic_info['dept']} - {basic_info['name']} ({basic_info['worker_id']})"
 
     body = f"""Dear SED,
 
 員工已透過系統完成新員工入職安全訓練評估考核，詳情如下：
-• 姓名：{b_info['name']}
-• 職員編號：{b_info['emp_id']}
-• 組別：{b_info['dept']}
-• 測驗得分：{q_res['score']} / {q_res['total']} ({status_str})
+• 姓名：{basic_info['name']}
+• 工人註冊證：{basic_info['worker_id']}
+• 組別：{basic_info['dept']}
+• 測驗得分：{quiz_result['score']} / {quiz_result['total']} ({status_str})
 • 提交時間：{submit_time_str}
 
 詳細考核報告 PDF 檔案已隨信附上，請查閱存檔。
@@ -184,7 +184,7 @@ def send_email_direct(b_info, q_res, status_str, pdf_bytes, submit_time_str):
     msg.attach(MIMEText(body, 'plain', 'utf-8'))
 
     # 加入 PDF 附件
-    safe_filename = re.sub(r'[\\/*?:"<>|]', "", b_info['name'])
+    safe_filename = re.sub(r'[\\/*?:"<>|]', "", basic_info['name'])
     filename = f"入職培訓紀錄_{safe_filename}.pdf"
     part = MIMEApplication(pdf_bytes, Name=filename)
     part['Content-Disposition'] = f'attachment; filename="{filename}"'
@@ -196,7 +196,7 @@ def send_email_direct(b_info, q_res, status_str, pdf_bytes, submit_time_str):
         server.send_message(msg)
 
 # =========================================================
-# 第一部分：入職培訓測驗 (Part I: Onboarding Quiz)
+# 第一部分：入職安全訓練評估測驗
 # =========================================================
 if st.session_state.step == 1:
     st.title("📝 東淦入職安全訓練評估系統")
@@ -209,7 +209,7 @@ if st.session_state.step == 1:
         with col1:
             name = st.text_input("姓名 *", max_chars=20)
         with col2:
-            emp_id = st.text_input("職員編號 *", max_chars=20)
+            worker_id = st.text_input("工人註冊證 *", max_chars=25)
         with col3:
             dept = st.selectbox("組別 *", DEPT_OPTIONS)
             
@@ -226,8 +226,8 @@ if st.session_state.step == 1:
         submit_step1 = st.form_submit_button("提交測驗並檢視得分 ➔")
 
     if submit_step1:
-        if not name.strip() or not emp_id.strip() or dept == "請選擇組別":
-            st.warning("請先完整填寫姓名、職員編號並選擇組別！")
+        if not name.strip() or not worker_id.strip() or dept == "請選擇組別":
+            st.warning("請先完整填寫姓名、工人註冊證並選擇組別！")
         elif not declaration:
             st.warning("請先勾選個人確認聲明方可提交！")
         else:
@@ -252,7 +252,7 @@ if st.session_state.step == 1:
             submit_time_str = now_hk.strftime("%Y-%m-%d %H:%M:%S")
 
             st.session_state.quiz_data = {
-                "basic_info": {"name": clean_text(name), "emp_id": clean_text(emp_id), "dept": dept},
+                "basic_info": {"name": clean_text(name), "worker_id": clean_text(worker_id), "dept": dept},
                 "quiz_result": {"score": score, "total": total_items, "is_pass": is_pass},
                 "user_answers": user_answers,
                 "submit_time": submit_time_str
@@ -262,7 +262,7 @@ if st.session_state.step == 1:
             st.rerun()
 
 # =========================================================
-# 第二部分：一鍵提交與備份 (Part II: Submit & Archiving)
+# 第二部分：一鍵提交與備份
 # =========================================================
 elif st.session_state.step == 2:
     b_info = st.session_state.quiz_data["basic_info"]
@@ -276,7 +276,7 @@ elif st.session_state.step == 2:
     st.markdown("🏢 [東淦工程有限公司 (Jumbo Orient) 官方網站](https://www.jumboorient.com.hk/)", unsafe_allow_html=True)
     st.write("")
     
-    st.info(f"👤 員工：{b_info['name']} ({b_info['emp_id']}) | 組別：{b_info['dept']}")
+    st.info(f"👤 員工：{b_info['name']} (工人註冊證：{b_info['worker_id']}) | 組別：{b_info['dept']}")
     
     if q_res['is_pass']:
         st.balloons()
@@ -316,7 +316,7 @@ elif st.session_state.step == 2:
 
     with st.expander("💬 備用通訊管道 (WhatsApp 通知 SED)"):
         wa_phone = "85295423912"
-        wa_msg = f"Dear SED,\n我是 {b_info['dept']} 的 {b_info['name']} ({b_info['emp_id']})。我已完成新員工入職安全訓練考核（得分：{q_res['score']}/{q_res['total']}，{status_str}）。"
+        wa_msg = f"Dear SED,\n我是 {b_info['dept']} 的 {b_info['name']} (工人註冊證：{b_info['worker_id']})。我已完成新員工入職安全訓練考核（得分：{q_res['score']}/{q_res['total']}，{status_str}）。"
         wa_url = f"https://wa.me/{wa_phone}?text={urllib.parse.quote(wa_msg)}"
         st.markdown(
             f'<a href="{wa_url}" target="_blank" style="text-decoration:none;">'
