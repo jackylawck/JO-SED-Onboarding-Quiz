@@ -1,3 +1,34 @@
+# ---------------------------------------------------------
+# SEO、作者資訊與 Google 驗證 Meta 標籤 (隱藏於底層，前端介面保持乾淨)
+# ---------------------------------------------------------
+seo_meta_tags = """
+<!-- Google Search Console 擁有權驗證 -->
+<meta name="google-site-verification" content="JZ5UohX-CcP_fQV0_DI9VadkKY4ZoTTkUifL88-fIcY" />
+
+<!-- 基礎 SEO 核心標籤：東淦工程創科項目 -->
+<meta name="description" content="東淦入職安全訓練評估系統 (JO-SED-REC-2026-V1) 是東淦工程有限公司 (Jumbo Orient Contracting Limited) 自主研發之無紙化地盤入職安全考核與合規歸檔系統。落實 ISO 45001、ISO 9001 及 ISO/IEC 27001 內控規範，具備全鏈路審計追蹤與雙向閉環存證。" />
+<meta name="keywords" content="東淦工程, 東淦工程有限公司, Jumbo Orient, Jumbo Orient Contracting Limited, 安全及環保組, SED, 入職培訓, 安全考核, 地盤安全, 工人註冊證, ISO 45001, ISO 9001, ISO 27001, 企業管治, 數碼轉型, ESG, 合規審計, 羅子淇, Jacky Law" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://jackylawck.github.io/jo-sed-onboarding-quiz/" />
+
+<!-- 作者與治理顧問資訊 -->
+<meta name="author" content="羅子淇 (Jacky Law)" />
+<meta property="article:author" content="羅子淇 (Jacky Law)" />
+
+<!-- Open Graph / LinkedIn / Facebook 社交卡片 -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="東淦入職安全訓練評估系統 | 東淦工程有限公司 (Jumbo Orient Contracting Limited)" />
+<meta property="og:description" content="東淦工程有限公司自主研發之無紙化地盤入職安全考核與合規歸檔系統，符合 ISO 45001 / 9001 / 27001 規範。" />
+<meta property="og:url" content="https://jackylawck.github.io/jo-sed-onboarding-quiz/" />
+<meta property="og:site_name" content="Jumbo Orient Contracting Limited" />
+
+<!-- Twitter / X 卡片 -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="東淦入職安全訓練評估系統 | 東淦工程有限公司" />
+<meta name="twitter:description" content="東淦工程有限公司自主研發之無紙化地盤入職安全考核與合規歸檔系統。" />
+"""
+st.markdown(seo_meta_tags, unsafe_allow_html=True)
+
 import os
 import json
 import re
