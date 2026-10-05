@@ -1,3 +1,22 @@
+import os
+import json
+import re
+import html
+import textwrap
+import smtplib
+import urllib.parse
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+from datetime import datetime, timezone, timedelta
+import streamlit as st
+from fpdf import FPDF
+
+# =========================================================
+# 0. 頁面設定 (必須是 Streamlit 執行的第一條指令)
+# =========================================================
+st.set_page_config(page_title="東淦入職安全訓練評估系統", page_icon="📝", layout="centered")
+
 # ---------------------------------------------------------
 # SEO、作者資訊與 Google 驗證 Meta 標籤 (隱藏於底層，前端介面保持乾淨)
 # ---------------------------------------------------------
@@ -28,23 +47,6 @@ seo_meta_tags = """
 <meta name="twitter:description" content="東淦工程有限公司自主研發之無紙化地盤入職安全考核與合規歸檔系統。" />
 """
 st.markdown(seo_meta_tags, unsafe_allow_html=True)
-
-import os
-import json
-import re
-import html
-import textwrap
-import smtplib
-import urllib.parse
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.application import MIMEApplication
-from datetime import datetime, timezone, timedelta
-import streamlit as st
-from fpdf import FPDF
-
-# 頁面設定
-st.set_page_config(page_title="東淦入職安全訓練評估系統", page_icon="📝", layout="centered")
 
 # ---------------------------------------------------------
 # 1. 前端門禁驗證 (支援 URL 參數 ?key=... 免密直入與輸入框驗證)
