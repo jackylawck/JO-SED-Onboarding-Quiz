@@ -3,96 +3,548 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
+  
+  <!-- 🔍 Google Search Console 擁有權驗證 -->
+  <meta name="google-site-verification" content="JZ5UohX-CcP_fQV0_DI9VadkKY4ZoTTkUifL88-fIcY">
 
-  <!-- Google Search Console 擁有權驗證 -->
-  <meta name="google-site-verification" content="JZ5UohX-CcP_fQV0_DI9VadkKY4ZoTTkUifL88-fIcY" />
-
-  <!-- 基礎 SEO 核心標籤：東淦工程創科項目 -->
-  <title>東淦入職安全訓練評估系統 | 東淦工程有限公司 (Jumbo Orient Contracting Limited)</title>
-  <meta name="description" content="東淦入職安全訓練評估系統 (JO-SED-REC-2026-V1) 是東淦工程有限公司 (Jumbo Orient Contracting Limited) 自主研發之無紙化地盤入職安全考核與合規歸檔系統。貫徹落實 ISO 45001、ISO 9001 及 ISO/IEC 27001 內控規範，具備全鏈路審計追蹤與雙向閉環存證。">
-  <meta name="keywords" content="東淦工程, 東淦工程有限公司, Jumbo Orient, Jumbo Orient Contracting Limited, 安全及環保組, SED, 入職培訓, 安全考核, 地盤安全, 工人註冊證, ISO 45001, ISO 9001, ISO 27001, 企業管治, 數碼轉型, ESG, 合規審計, 羅子淇, Jacky Law">
+  <!-- 🏢 基礎 SEO 核心標籤：東淦工程創科項目 -->
+  <title>東淦入職安全訓練評估系統 JO-SED | 東淦工程有限公司 (Jumbo Orient Contracting Limited)</title>
+  <meta name="description" content="東淦入職安全訓練評估系統 (JO-SED-REC-2026-V1) 是東淦工程有限公司（Jumbo Orient Contracting Limited）自主研發之無紙化地盤入職安全考核與合規歸檔引擎。貫徹香港法例第59章《工廠及工業經營條例》與 ISO 45001 / 9001 / 27001 內控規範，具備全鏈路審計追蹤與雙向閉環存證。">
+  <meta name="keywords" content="東淦工程, 東淦工程有限公司, Jumbo Orient, Jumbo Orient Contracting Limited, JO-SED, 安全及環保組, SED, 入職培訓, 安全考核, 地盤安全, 工人註冊證, ISO 45001, ISO 9001, ISO 27001, 企業管治, 數位轉型, ESG, 合規審計">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://jackylawck.github.io/jo-sed-onboarding-quiz/">
 
-  <!-- 作者與治理顧問資訊 -->
+  <!-- 👤 作者資訊 -->
   <meta name="author" content="羅子淇 (Jacky Law)">
   <meta property="article:author" content="羅子淇 (Jacky Law)">
 
-  <!-- Open Graph / LinkedIn / Facebook 社交分享卡片 -->
+  <!-- 🌐 Open Graph / LinkedIn / Facebook 社交卡片 -->
   <meta property="og:type" content="website">
-  <meta property="og:locale" content="zh_HK">
-  <meta property="og:site_name" content="Jumbo Orient Contracting Limited">
-  <meta property="og:title" content="東淦入職安全訓練評估系統 | 東淦工程有限公司 (Jumbo Orient Contracting Limited)">
-  <meta property="og:description" content="東淦工程有限公司自主研發之無紙化地盤入職安全考核與合規歸檔系統，符合 ISO 45001 / 9001 / 27001 規範。">
   <meta property="og:url" content="https://jackylawck.github.io/jo-sed-onboarding-quiz/">
+  <meta property="og:title" content="東淦入職安全訓練評估系統 (JO-SED) | 東淦工程有限公司創科項目">
+  <meta property="og:description" content="零資料留存、全鏈路審計追蹤。東淦工程以 Streamlit 與受控 PDF 引擎構建地盤安全培訓閉環，推動營造業合規新標竿。">
+  <meta property="og:image" content="https://www.jumboorient.com.hk/assets/jumbo-orient-og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="東淦入職安全訓練評估系統 JO-SED 架構全景圖">
+  <meta property="og:locale" content="zh_HK">
+  <meta property="og:site_name" content="東淦工程有限公司 Jumbo Orient Contracting Limited">
 
-  <!-- Twitter / X 卡片標籤 -->
+  <!-- 🐦 Twitter / X Cards -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="東淦入職安全訓練評估系統 | 東淦工程有限公司">
-  <meta name="twitter:description" content="東淦工程有限公司自主研發之無紙化地盤入職安全考核與合規歸檔系統。">
+  <meta name="twitter:title" content="JO-SED: 東淦入職安全訓練評估系統 | 東淦工程有限公司">
+  <meta name="twitter:description" content="全鏈路審計追蹤之企業地盤入職安全考核與存證系統，落實 ISO 45001、ISO 9001 與 ISO/IEC 27001 高標準管治。">
+  <meta name="twitter:image" content="https://www.jumboorient.com.hk/assets/jumbo-orient-og-banner.png">
 
-  <!-- 自動跳轉至 Streamlit 應用程式 (選填，若純作為跳轉頁) -->
-  <!-- <meta http-equiv="refresh" content="0; url=https://jo-sed-onboarding-quiz.streamlit.app"> -->
+  <!-- 📱 PWA 與行動端原生適配 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="東淦JO-SED">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0b192c">
+  <meta name="application-name" content="JO-SED 東淦入職安全訓練評估系統">
+
+  <!-- 🛡️️ 企業級資安防禦策略：Content Security Policy (CSP) 與權限控制 -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: https://img.shields.io https://www.jumboorient.com.hk;
+    font-src 'self' data:;
+    connect-src 'self';
+    media-src 'none';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'none';
+    frame-ancestors 'none';
+  ">
+  <meta http-equiv="Permissions-Policy" content="accelerometer=(), gyroscope=(), microphone=(), camera=(), geolocation=(), payment=()">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- 🏷️ Schema.org 結構化資料 (後端精準關聯：企業法人 + 作者 Person) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Corporation",
+        "@id": "https://www.jumboorient.com.hk/#organization",
+        "name": "東淦工程有限公司",
+        "alternateName": "Jumbo Orient Contracting Limited",
+        "url": "https://www.jumboorient.com.hk/",
+        "logo": "https://www.jumboorient.com.hk/assets/logo.png",
+        "description": "東淦工程有限公司專注於高標準工程營造與營建工程服務，致力於推動智慧建造技術、數位轉型與企業高標準誠信管治。",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Hong Kong",
+          "addressCountry": "HK"
+        }
+      },
+      {
+        "@type": "Person",
+        "@id": "https://github.com/jackylawck/#author",
+        "name": "羅子淇 (Jacky Law)",
+        "jobTitle": "Senior HR Manager & Corporate Governance Advisor",
+        "worksFor": {
+          "@id": "https://www.jumboorient.com.hk/#organization"
+        },
+        "url": "https://github.com/jackylawck"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://jackylawck.github.io/jo-sed-onboarding-quiz/#software",
+        "name": "JO-SED: 東淦入職安全訓練評估系統",
+        "alternateName": "Jumbo Orient Onboarding Safety Assessment System (JO-SED-REC-2026-V1)",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Streamlit, Web Browser",
+        "author": {
+          "@id": "https://github.com/jackylawck/#author"
+        },
+        "publisher": {
+          "@id": "https://www.jumboorient.com.hk/#organization"
+        },
+        "description": "企業級無紙化入職安全考核評估與自動化歸檔系統，落實 ISO 45001、ISO 9001 及 ISO/IEC 27001 合規閉環。"
+      }
+    ]
+  }
+  </script>
 
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    :root {
+      --primary: #0078d4;
+      --primary-dark: #004578;
+      --bg-dark: #070f1e;
+      --card-bg: rgba(16, 29, 51, 0.75);
+      --card-border: rgba(0, 120, 212, 0.28);
+      --accent: #107c41;
+      --accent-purple: #8764b8;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang HK", "Microsoft JhengHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      background-color: #f8fafc;
-      color: #0f172a;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      text-align: center;
     }
-    .container {
-      max-width: 600px;
-      padding: 30px;
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    }
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
-    p {
-      color: #475569;
-      font-size: 0.95rem;
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(0, 120, 212, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 124, 65, 0.12) 0px, transparent 50%);
+      color: var(--text-main);
       line-height: 1.6;
+      padding: 24px 16px;
+      min-height: 100vh;
     }
-    .badge {
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 16px 28px;
+    }
+
+    .corp-badge {
       display: inline-block;
-      padding: 4px 10px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      background: #e2e8f0;
+      background: rgba(0, 120, 212, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      padding: 4px 14px;
       border-radius: 9999px;
-      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
+      text-transform: uppercase;
     }
-    a.btn {
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .badge-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .badge-bar img {
+      height: 22px;
+    }
+
+    .tagline-box {
+      background: var(--card-bg);
+      border-left: 4px solid var(--primary);
+      border-radius: 4px;
+      padding: 16px 20px;
+      max-width: 820px;
+      margin: 0 auto 28px;
+      text-align: left;
+      font-size: 0.98rem;
+    }
+
+    .tagline-box strong {
+      color: #93c5fd;
+    }
+
+    .cta-container {
+      margin-bottom: 36px;
+    }
+
+    .btn-launch {
       display: inline-block;
-      margin-top: 1.5rem;
-      padding: 10px 24px;
-      background-color: #0284c7;
+      background: linear-gradient(135deg, #0078d4 0%, #004578 100%);
       color: #ffffff;
       text-decoration: none;
-      border-radius: 6px;
-      font-weight: 600;
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 12px 32px;
+      border-radius: 8px;
+      box-shadow: 0 4px 14px rgba(0, 120, 212, 0.4);
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
-    a.btn:hover {
-      background-color: #0369a1;
+
+    .btn-launch:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 120, 212, 0.6);
+      color: #ffffff;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 28px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .card h2 {
+      font-size: 1.35rem;
+      color: #ffffff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    p {
+      color: #d1d5db;
+      font-size: 0.96rem;
+      margin-bottom: 14px;
+    }
+
+    /* 流程圖視覺化樣式 */
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .flow-node {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 16px;
+      position: relative;
+    }
+
+    .flow-node.active {
+      border-color: rgba(0, 120, 212, 0.6);
+      background: rgba(0, 120, 212, 0.08);
+    }
+
+    .flow-step {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #60a5fa;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .flow-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .flow-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 0;
+    }
+
+    /* 業務表格樣式 */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    th {
+      background: rgba(0, 120, 212, 0.2);
+      color: #93c5fd;
+      padding: 12px 14px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #d1d5db;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .role-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* 技術亮點網格 */
+    .tech-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .tech-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .tech-item h3 {
+      font-size: 0.95rem;
+      color: #60a5fa;
+      margin-bottom: 8px;
+    }
+
+    .tech-item p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 16px 20px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      margin-top: 40px;
+    }
+
+    footer a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 640px) {
+      h1 { font-size: 1.6rem; }
+      .card { padding: 18px; }
+      body { padding: 16px 10px; }
     }
   </style>
 </head>
 <body>
+
   <div class="container">
-    <div class="badge">IMS 受控創科專案</div>
-    <h1>東淦入職安全訓練評估系統</h1>
-    <p>東淦工程有限公司 (Jumbo Orient Contracting Limited)<br>安全及環保組 (SED) 自主研發之無紙化合規考核系統</p>
-    <a href="https://jo-sed-onboard-quiz.streamlit.app" class="btn">進入安全考核系統 ➔</a>
+    <header>
+      <div class="corp-badge">東淦工程有限公司・安全及環保組 (SED) 創科項目</div>
+      <h1>JO-SED: 東淦入職安全訓練評估系統</h1>
+      <div class="subtitle">Jumbo Orient Onboarding Safety Assessment System (JO-SED-REC-2026-V1)</div>
+      
+      <div class="badge-bar">
+        <a href="https://github.com/jackylawck/jo-sed-onboarding-quiz" target="_blank" rel="noopener">
+          <img src="https://img.shields.io/badge/System-JO--SED-0078D4.svg" alt="System JO-SED">
+        </a>
+        <a href="https://www.jumboorient.com.hk" target="_blank" rel="noopener">
+          <img src="https://img.shields.io/badge/Organization-Jumbo%20Orient-blue.svg" alt="Jumbo Orient Contracting Limited">
+        </a>
+        <img src="https://img.shields.io/badge/Compliance-ISO%2045001%20%7C%209001-green.svg" alt="ISO 45001 and 9001">
+        <img src="https://img.shields.io/badge/Security-ISO%2F举27001%20Aligned-purple.svg" alt="ISO 27001">
+        <img src="https://img.shields.io/badge/Privacy-Zero--Data--Retention-orange.svg" alt="Zero-Data-Retention">
+      </div>
+
+      <div class="tagline-box">
+        <strong>"Zero-Data-Retention, Full-Audit Enterprise Safety Onboarding & Compliance Engine"</strong><br>
+        「零資料留存、全鏈路審計追蹤之企業地盤入職安全培訓與合規存證系統」
+      </div>
+
+      <div class="cta-container">
+        <a href="https://jo-sed-onboard-quiz.streamlit.app" target="_blank" rel="noopener" class="btn-launch">
+          🚀 立即進入安全訓練評估系統 (Web App)
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <!-- 專案摘要 -->
+      <section class="card">
+        <h2>📌 專案摘要 (Executive Summary)</h2>
+        <p><strong>東淦入職安全訓練評估系統 (JO-SED)</strong> 是東淦工程有限公司針對香港法定職安健規範（香港法例第 59 章《工廠及工業經營條例》）及國際標準管理體系（ISO 45001 / ISO 9001 / ISO 27001）自主設計的無紙化治理方案。</p>
+        <p>本專案將地盤新進人員「地盤入職安全培訓評估紀錄」全面數位化，以 <strong>Streamlit 原生架構、動態 Secrets 金鑰防護與受控 PDF 引擎</strong> 為基礎架構，在<strong>零外置資料庫、零個人資料持久化（Zero-Data-Retention）</strong>的前提下，實現「工友填報 ➔ 即時自動評分 ➔ 受控 PDF 產生 ➔ 後端自動直送 SED 郵箱 ➔ 本地離線備份」的全自動安全合規閉環。</p>
+      </section>
+
+      <!-- 治理閉環架構 -->
+      <section class="card">
+        <h2>🏛️️ 流程生命週期與治理閉環 (Workflow Lifecycle)</h2>
+        <p>傳統紙本地盤培訓紀錄常面臨「紙本易污損、字跡潦草、缺乏防偽時間戳、審計調閱繁複」等痛點。JO-SED 透過兩階段嚴謹架構達成 100% 封閉式治理閉環（Closed-Loop Governance）：</p>
+        
+        <div class="flow-grid">
+          <div class="flow-node">
+            <div class="flow-step">第一階段・驗證</div>
+            <div class="flow-title">門禁金鑰核驗</div>
+            <div class="flow-desc">支援 URL 參數 (<code>?key=...</code>) 直達或通行碼輸入，杜絕未授權存取。</div>
+          </div>
+          <div class="flow-node">
+            <div class="flow-step">第一階段・考核</div>
+            <div class="flow-title">安全試題測驗</div>
+            <div class="flow-desc">填寫姓名、工人註冊證並完成 5 條地盤安全評估試題，勾選個人誠信聲明。</div>
+          </div>
+          <div class="flow-node">
+            <div class="flow-step">第二階段・評定</div>
+            <div class="flow-title">即時自動評分</div>
+            <div class="flow-desc">即時計算得分（最少答對 3 條判定為 PASS / FAIL），並產生合規報告。</div>
+          </div>
+          <div class="flow-node">
+            <div class="flow-step">第二階段・存證</div>
+            <div class="flow-title">受控 PDF 繪製</div>
+            <div class="flow-desc">自動嵌入 HKT (UTC+8) 時間戳、受控編號 <code>JO-SED-REC-2026-V1</code> 與法律聲明。</div>
+          </div>
+          <div class="flow-node active">
+            <div class="flow-step">第二階段・閉環</div>
+            <div class="flow-title">一鍵自動歸檔</div>
+            <div class="flow-desc">後端 SMTP 自動直寄 SED 郵箱，徹底杜絕漏寄附件與人為疏失。</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 業務對照矩陣 -->
+      <section class="card">
+        <h2>📋 業務四部曲對照表 (Governance Matrix)</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>階段</th>
+                <th>責任角色</th>
+                <th>承載技術</th>
+                <th>處置動作與審計紀錄</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>第一部分：身份識別</strong></td>
+                <td><span class="role-badge">新入職員工 / 工友</span></td>
+                <td>Web 門禁模組</td>
+                <td>驗證合法存取權限，填寫姓名、工人註冊證號碼及所屬組別。</td>
+              </tr>
+              <tr>
+                <td><strong>第一部分：安全考核</strong></td>
+                <td><span class="role-badge">新入職員工 / 工友</span></td>
+                <td>動態題庫引擎</td>
+                <td>完成個人防護裝備 (PPE)、高空作業、意外處理與危害通報等核心職安健試題。</td>
+              </tr>
+              <tr>
+                <td><strong>第二部分：能力評定</strong></td>
+                <td><span class="role-badge">評估系統核心</span></td>
+                <td>確定性規則演算法</td>
+                <td>執行 60% 門檻判定（≥3 題為合格），即時反饋考核狀態，落實 ISO 45001 Clause 7.2。</td>
+              </tr>
+              <tr>
+                <td><strong>第二部分：文件化紀錄</strong></td>
+                <td><span class="role-badge">受控 PDF 引擎</span></td>
+                <td>FPDF (Noto Sans TC)</td>
+                <td>自動生成含公司抬頭、受控文件編號與香港標準時間 (HKT) 之不可竄改 PDF 報告。</td>
+              </tr>
+              <tr>
+                <td><strong>第二部分：自動歸檔</strong></td>
+                <td><span class="role-badge">安環組 (SED) / 系統</span></td>
+                <td>Python SMTP / M365</td>
+                <td>一鍵將 PDF 報告直送安環組審計郵箱，並提供工友 WhatsApp 備用通訊確認機制。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 技術亮點 -->
+      <section class="card">
+        <h2>⚙️️ 技術亮點 (Technical Implementation)</h2>
+        <div class="tech-list">
+          <div class="tech-item">
+            <h3>1. 零資料留存架構 (Zero-Data-Retention)</h3>
+            <p>無外置資料庫，所有個資僅於記憶體暫存用於即時渲染 PDF，作業完畢立即銷毀，徹底杜絕雲端資料庫洩漏風險。</p>
+          </div>
+          <div class="tech-item">
+            <h3>2. 動態 Secrets 機密隔離</h3>
+            <p>題庫答案、門禁通行碼與 SMTP 寄件憑證均獨立儲存於雲端環境變數，原始碼公開倉庫 100% 零機密暴露。</p>
+          </div>
+          <div class="tech-item">
+            <h3>3. 輸入消毒與防注入防禦</h3>
+            <p>嚴格限制輸入字元長度並自動清理換行及特殊符號，防範 XSS、HTML 注入與檔名穿越等潛在安全風險。</p>
+          </div>
+          <div class="tech-item">
+            <h3>4. 時區標準化 (Timezone Normalization)</h3>
+            <p>底層全面鎖定香港標準時間（UTC+8 HKT），確保法律免責聲明與培訓能力紀錄完全符合法定審計查驗。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>© 2026 東淦工程有限公司 (Jumbo Orient Contracting Limited). All Rights Reserved.</p>
+      <p>System Architect & Governance Advisor: <a href="https://github.com/jackylawck" target="_blank" rel="noopener">羅子淇 (Jacky Law)</a></p>
+    </footer>
   </div>
+
 </body>
 </html>
